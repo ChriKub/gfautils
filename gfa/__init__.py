@@ -4,5 +4,5 @@ from .mapping import pack
 from .mapping import vectorize
 
 __author__ = 'Christian Kubica'
-__version__ = '0.2'
+__version__ = '0.9'
 
