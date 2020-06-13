@@ -57,4 +57,11 @@ class Segment():
 		return None
 
 
+	def build_links(self):
+		linkList=[]
+		for link in self.successorList:
+			linkList.append(link.get_linkLine())
+		return linkList
+
+
 
