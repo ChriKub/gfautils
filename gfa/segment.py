@@ -59,7 +59,7 @@ class Segment():
 
 	def build_links(self):
 		linkList=[]
-		for link in self.successorList:
+		for link in self.outgoingLinks:
 			linkList.append(link.get_linkLine())
 		return linkList
 
