@@ -2,6 +2,7 @@
 
 from .link import Link
 from .path import Path
+from .bubble import Bubble
 from .segment import Segment
 from .mapping import pack
 from .mapping import vectorize
@@ -12,6 +13,7 @@ class gfaHandler():
 		self.segmentDict={}
 		self.pathDict={}
 		self.linkList=[]
+		self.bubbleList=[]
 		self.process_Reveal(revealFile)
 
 
@@ -38,8 +40,8 @@ class gfaHandler():
 			splitLink=link.split('\t')
 			newLink=Link(self.segmentDict[splitLink[1]], splitLink[2], self.segmentDict[splitLink[3]], splitLink[4], splitLink[5])
 			self.linkList.append(newLink)
-			self.segmentDict[splitLink[1]].add_incomingLink(newLink)
-			self.segmentDict[splitLink[3]].add_outgoingLink(newLink)
+			self.segmentDict[splitLink[1]].add_outgoingLink(newLink)
+			self.segmentDict[splitLink[3]].add_incomingLink(newLink)
 		return None
 
 
@@ -100,6 +102,15 @@ class gfaHandler():
 		for path in self.pathDict:
 			pathList.append('\t'.join(self.pathDict[path].build_path()))
 		return pathList
+
+
+	def get_bubbleList(self):
+		return self.bubbleList
+
+
+	def add_bubble(self, bubble):
+		self.bubbleList.append(Bubble(bubble))
+		return None
 
 
 	def add_pack(self, pack):

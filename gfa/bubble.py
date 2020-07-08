@@ -1,33 +1,33 @@
 #!/usr/bin/env python
 
 
-from gfa import gfaHandler
-
-
-
 class Bubble():
 
-	def __init__(self, bubbleLine):
-		self.start=bubbleLine.split('\t')[0]
-		self.stop=bubbleLine.split('\t')[1]
-		self.type=bubbleLine.split('\t')[3]
-		self.variantList=bubbleLine.split('\t')[2].split(',')[1:-1]
+	def __init__(self, leftAnchor, rightAnchor, segmentList, bubbleType):
+		self.leftAnchor=leftAnchor
+		self.rightAnchor=rightAnchor
+		self.segmentList=segmentList
+		self.bubbleType=bubbleType
 
 
-	def get_start(self):
-		return self.start
+	def get_Anchors(self):
+		return self.leftAnchor, self.rightAnchor
 
 
-	def get_stop(self):
-		return self.stop
+	def get_leftAnchor(self):
+		return self.leftAnchor
 
 
-	def get_variantList(self):
-		return self.variantList
+	def get_rightAnchor(self):
+		return self.rightAnchor
 
 
-	def get_variant_number(self):
-		return len(self.variantList)
+	def get_segmentList(self):
+		return self.segmentList
+
+
+	def get_traversing_path(self):
+		return self.leftAnchor.get_pathDict()
 
 
 	def get_type(self):

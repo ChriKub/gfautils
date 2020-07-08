@@ -64,4 +64,10 @@ class Segment():
 		return linkList
 
 
-
+	def is_repeat(self):
+		repeat=False
+		for path in self.pathDict:
+			if len(self.pathDict[path])!=1:
+				repeat=True
+				break
+		return repeat
