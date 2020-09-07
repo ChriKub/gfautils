@@ -44,6 +44,10 @@ class Bubble():
 		return self.subBubbleList
 
 
+	def add_segments(self, newSegments):
+		self.segmentSet.update(set(newSegments))
+
+
 
 class Traversal():
 
