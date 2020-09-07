@@ -13,7 +13,7 @@ class gfaHandler():
 		self.segmentDict={}
 		self.pathDict={}
 		self.linkList=[]
-		self.bubbleList=[]
+		self.bubbleDict={}
 		self.process_Reveal(revealFile)
 
 
@@ -116,12 +116,15 @@ class gfaHandler():
 		return pathList
 
 
-	def get_bubbleList(self):
+	def get_bubbleDict(self):
 		return self.bubbleList
 
 
-	def add_bubble(self, leftAnchor, rightAnchor, segmentList, bubbleType):
-		self.bubbleList.append(Bubble(leftAnchor, rightAnchor, segmentList, bubbleType))
+	def add_bubble(self, bubbleID, leftAnchor, rightAnchor, segmentList, coreNumber, parent=None):
+		if str(coreNumber) in self.bubbleDict:
+			self.bubbleDict[str(coreNumber)].append(Bubble(bubbleID, leftAnchor, rightAnchor, segmentList, str(coreNumber), parent))
+		else:
+			self.bubbleDict[str(coreNumber)]=[Bubble(bubbleID, leftAnchor, rightAnchor, segmentList, str(coreNumber), parent)]
 		return None
 
 
