@@ -1,5 +1,4 @@
 from .gfa import gfaHandler
-from .bubble import Bubble
 from .mapping import pack
 from .mapping import vectorize
 
