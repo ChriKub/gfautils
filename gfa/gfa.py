@@ -2,6 +2,7 @@
 
 from .link import Link
 from .path import Path
+from .bubble import Bubble
 from .segment import Segment
 from .mapping import pack
 from .mapping import vectorize
@@ -12,6 +13,7 @@ class gfaHandler():
 		self.segmentDict={}
 		self.pathDict={}
 		self.linkList=[]
+		self.bubbleList=[]
 		self.process_Reveal(revealFile)
 
 
@@ -24,7 +26,7 @@ class gfaHandler():
 				elif line[0]=='L':
 					linkList.append(line)
 				elif line[0]=='P':
-					self.pathDict[line.split('\t')[1]]=Path(line.split('\t')[1], line.split('\t')[2], line.split('\t')[3])
+					self.pathDict[line.split('\t')[1].split(' ')[0]]=Path(line.split('\t')[1].split(' ')[0], line.split('\t')[2], line.split('\t')[3])
 		if self.pathDict:
 			for pathId in self.pathDict:
 				self.process_path(self.pathDict[pathId])
@@ -38,8 +40,8 @@ class gfaHandler():
 			splitLink=link.split('\t')
 			newLink=Link(self.segmentDict[splitLink[1]], splitLink[2], self.segmentDict[splitLink[3]], splitLink[4], splitLink[5])
 			self.linkList.append(newLink)
-			self.segmentDict[splitLink[1]].add_incomingLink(newLink)
-			self.segmentDict[splitLink[3]].add_outgoingLink(newLink)
+			self.segmentDict[splitLink[1]].add_outgoingLink(newLink)
+			self.segmentDict[splitLink[3]].add_incomingLink(newLink)
 		return None
 
 
@@ -54,15 +56,15 @@ class gfaHandler():
 
 	def add_segment(self, segmentLine):
 		self.segmentDict[segmentLine.split('\t')[1]]=Segment(segmentLine)
-		return None
+		return self.segmentDict[segmentLine.split('\t')[1]]
 
 
 	def get_segments(self):
 			return self.segmentDict.keys()
 
 
-	def get_segment(self, segmentId):
-		return self.segmentDict[segmentId]
+	def get_segment(self, segmentID):
+		return self.segmentDict[segmentID]
 
 
 	def get_segmentDict(self):
@@ -73,12 +75,17 @@ class gfaHandler():
 		return self.pathDict.keys()
 
 
-	def get_path(self, pathId):
-		return self.pathDict[pathId]
+	def get_path(self, pathID):
+		return self.pathDict[pathID]
 
 
 	def get_pathDict(self):
 		return self.pathDict
+
+
+	def change_pathList(self, pathID, pathList):
+		self.pathDict[pathID].change_pathList(pathList)
+		return None
 
 
 	def get_linkList(self):
@@ -86,6 +93,13 @@ class gfaHandler():
 		for segment in self.segmentDict:
 			linkList.extend(self.segmentDict[segment].build_links())
 		return linkList
+
+
+	def add_path(self, leftSegment, leftOrientation, rightSegment, rightOrientation, CIGAR):
+			newLink=Link(leftSegment, leftOrientation, rightSegment, rightOrientation, CIGAR)
+			self.linkList.append(newLink)
+			leftSegment.add_outgoingLink(newLink)
+			rightSegment.add_incomingLink(newLink)
 
 
 	def get_segmentList(self):
@@ -100,6 +114,15 @@ class gfaHandler():
 		for path in self.pathDict:
 			pathList.append('\t'.join(self.pathDict[path].build_path()))
 		return pathList
+
+
+	def get_bubbleList(self):
+		return self.bubbleList
+
+
+	def add_bubble(self, leftAnchor, rightAnchor, segmentList, bubbleType):
+		self.bubbleList.append(Bubble(leftAnchor, rightAnchor, segmentList, bubbleType))
+		return None
 
 
 	def add_pack(self, pack):
@@ -117,12 +140,39 @@ class gfaHandler():
 		return None
 
 
-	def build_gfa(self):
-		gfa=['H\tVN:Z:1.0']
+	def build_gfa(self, header=False):
+		gfa=[]
+		if header:
+			gfa=['H\tVN:Z:1.0'+header]
+		else:
+			gfa=['H\tVN:Z:1.0']
 		gfa.extend(self.get_segmentList())
 		gfa.extend(self.get_linkList())
 		if self.pathDict:
 			gfa.extend(self.get_pathList())
+		return gfa
+
+
+	def rebuild_gfa(self, header=False):
+		gfa=[]
+		segmentSet=set([])
+		linkSet=set([])
+		pathList=self.get_pathList()
+		for pathName in self.get_pathDict():
+			pathList=self.get_path(pathName).get_pathList()
+			for i in range(len(pathList)):
+				segmentSet.add('\t'.join(['S', pathList[i][:-1], self.segmentDict[pathList[i][:-1]].get_sequence()]))
+				try:
+					linkSet.add('\t'.join(['L', pathList[i][:-1], pathList[i][-1], pathList[i+1][:-1], pathList[i+1][-1], '0M']))
+				except:
+					pass
+		if header:
+			gfa=['H\tVN:Z:1.0'+header]
+		else:
+			gfa=['H\tVN:Z:1.0']
+		gfa.extend(list(segmentSet))
+		gfa.extend(list(linkSet))
+		gfa.extend(self.get_pathList())
 		return gfa
 
 

@@ -41,3 +41,12 @@ class Path():
 
 	def get_position(self, position):
 		return self.positionDict[position]
+
+
+	def change_pathList(self, pathList, cigarList=None):
+		self.pathList=pathList
+		if cigarList:
+			self.cigarList=cigarList
+		return None
+
+
