@@ -14,6 +14,7 @@ class gfaHandler():
 		self.pathDict={}
 		self.linkList=[]
 		self.bubbleDict={}
+		self.bubbleList=[]
 		self.process_Reveal(revealFile)
 
 
@@ -117,15 +118,36 @@ class gfaHandler():
 
 
 	def get_bubbleDict(self):
+		return self.bubbleDict
+
+
+	def get_bubbleList(self):
 		return self.bubbleList
 
 
 	def add_bubble(self, bubbleID, leftAnchor, rightAnchor, segmentList, coreNumber, parent=None):
+		bubble=Bubble(bubbleID, leftAnchor, rightAnchor, segmentList, str(coreNumber), parent)
+		self.bubbleList.append(bubble)
 		if str(coreNumber) in self.bubbleDict:
-			self.bubbleDict[str(coreNumber)].append(Bubble(bubbleID, leftAnchor, rightAnchor, segmentList, str(coreNumber), parent))
+			self.bubbleDict[str(coreNumber)].append(bubble)
 		else:
-			self.bubbleDict[str(coreNumber)]=[Bubble(bubbleID, leftAnchor, rightAnchor, segmentList, str(coreNumber), parent)]
-		return None
+			self.bubbleDict[str(coreNumber)]=[bubble]
+		return bubble
+
+
+	def has_bubble(self, segmentList, leftAnchorNode, rightAnchorNode):
+		hasBubble=False
+		for bubble in self.bubbleList:
+			if set(segmentList).issubset(bubble.get_segmentSet()):
+				if hasBubble:
+					if len(hasBubble.get_segmentSet())>len(bubble.get_segmentSet()):
+						hasBubble=bubble
+				else:
+					hasBubble=bubble
+			elif leftAnchorNode==bubble.get_leftAnchor() and rightAnchorNode==bubble.get_rightAnchor():
+				hasBubble=bubble
+				break
+		return hasBubble
 
 
 	def add_pack(self, pack):

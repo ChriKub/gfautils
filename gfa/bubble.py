@@ -5,15 +5,19 @@ class Bubble():
 
 	def __init__(self, bubbleID, leftAnchor, rightAnchor, segmentList, coreNumber, parent=None):
 		self.bubbleID=bubbleID
+		print(bubbleID)
 		self.leftAnchor=leftAnchor
-		leftAnchor.add_leftAnchor(self)
+		if leftAnchor:
+			leftAnchor.add_leftAnchor(self)
 		self.rightAnchor=rightAnchor
-		rightAnchor.add_rightAnchor(self)
+		if rightAnchor:
+			rightAnchor.add_rightAnchor(self)
 		self.segmentSet=set(segmentList)
 		self.pathDict={}
 		self.coreNumber=coreNumber
 		self.parent=parent
 		self.subBubbleList=[]
+		self.traversalList=[]
 
 
 	def get_bubbleID(self):
@@ -36,8 +40,14 @@ class Bubble():
 		return self.segmentSet
 
 
-	def add_subBubble(self, bubbleObject):
-		self.subBubbleList.add(bubbleObject)
+	def find_subBubble(self, bubbleID, leftAnchor, rightAnchor, traversalSet, coreNumber):
+		subBubbleObject=None
+		for subBubble in self.subBubbleList:
+			if subBubble.get_leftAnchor()==leftAnchor and subBubble.get_rightAnchor()==rightAnchor:
+				subBubbleObject=subBubble
+			elif set(traversalSet).issubset(subBubble.get_segmentSet()):
+				subBubbleObject=subBubble.find_subBubble(bubbleID, leftAnchor, rightAnchor, traversalSet, coreNumber)
+		return subBubbleObject
 
 
 	def get_subBubbles(self):
@@ -48,60 +58,41 @@ class Bubble():
 		self.segmentSet.update(set(newSegments))
 
 
+	def add_traversal(self, pathName, segmentList):
+		oldTraversal=None
+		for traversal in self.traversalList:
+			if segmentList==traversal.get_segmentList():
+				traversal.add_path(pathName)
+				oldTraversal=traversal
+		if not oldTraversal:
+			self.traversalList.append(Traversal(pathName, segmentList))
+		self.segmentSet.update(set(segmentList))
+		return None
+
+
+	def get_traversalList(self):
+		return self.traversalList
+
+
+	def add_subBubble(self, subBubble):
+		self.subBubbleList.append(subBubble)
+
 
 class Traversal():
 
-	def __init__(self, pathList, segmentList, orientation):
-		self.pathDict={}
-		self.traversalLength=self.calculate_traversalLength(segmentList)
+	def __init__(self, pathName, segmentList):
+		self.pathList=[]
+		self.add_path(pathName)
 		self.segmentList=segmentList
-		self.orientation=orientation
-		self.fill_pathDict(pathList)
 
 
-	def calculate_traversalLength(self, segmentList):
-		traversalLength=0
-		if segmentList[0]!='InDel':
-			for segmentObject in segmentList:
-				traversalLength+=segmentObject.get_sequence_length()
-		return traversalLength
-
-
-	def get_traversalLength(self):
-		return self.traversalLength
-
-
-	def fill_pathDict(self, pathList):
-		for path in pathList:
-			if path[0] in self.pathDict:
-				self.pathDict[path[0]].append(path[1])
-			else:
-				self.pathDict[path[0]]=[path[1]]
-		return None
+	def add_path(self, pathName):
+		self.pathList.append(pathName)
 
 
 	def get_pathList(self):
 		return self.pathList
 
 
-	def get_traversalNumber(self):
-		traversalSet=set([])
-		for path in self.pathDict.keys():
-			traversalSet.add(path.split('_')[0])
-		return len(traversalSet)
-
-
-	def is_traversed(self, src):
-		traversed=False
-		for path in self.pathList:
-			if path==src:
-				traversed=True
-		return traversed
-
-
 	def get_segmentList(self):
 		return self.segmentList
-
-
-	def get_orientation(self):
-		return self.orientation
