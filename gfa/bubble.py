@@ -5,7 +5,6 @@ class Bubble():
 
 	def __init__(self, bubbleID, leftAnchor, rightAnchor, segmentList, coreNumber, parent=None):
 		self.bubbleID=bubbleID
-		print(bubbleID)
 		self.leftAnchor=leftAnchor
 		if leftAnchor:
 			leftAnchor.add_leftAnchor(self)
