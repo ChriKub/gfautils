@@ -2,13 +2,17 @@
 
 A package to read and modify gfa files.
 
-## gfaHandler
+This package encodes a data structure that allows access to gfa files.
 
-Allows the access to nodes and path in the graph.
+## Quick start-up:
+
+Install:
+
+	python setup.py install
+
+Loading a gfa:
 
 	from gfa import gfaHandler
-
-Load a gfa file:
 
 	file=open(inpath, 'r')
 	input=file.read()
@@ -16,21 +20,80 @@ Load a gfa file:
 	
 	gfaFile = gfaHandler(input)
 
-Build a gfa file:
-
 	gfaFile.build_gfa()
 
-Accessing the data:
+###Accessing the data in a the gfa:
 
-### Segments
+#### Class: GFA
 
-Segment objects are stored in a dictionary and can be accessed using their segment id.
+* segmentDict: _{segmentID: segmentObject,...}_
+* pathDict: _{pathName: pathObject,...}_
+* linkList: _[linkObject,...]_
+* bubbleDict: _{coreNumber: [bubbleObject,...]}_
+* bubbleList: _[bubbleObject,...]_
 
-	self.get_segmentDict()
+	get_segmentDict()
 
-Returns the complete segment dictionary
+Returns the full segmentDict.
 
-	self.get_segments()
+	get_segment(segmentID)
+
+Returns the segmentObject assigned to _segmentID_ in the Dict..
+
+	get_segments()
+
+Returns all segmentIDs
+
+	add_segment(segmentLine)
+
+Adds a new segment to the segmentDict. _segmentLine_ has the format of a gfa segment line.
+
+
+	get_segmentList()
+
+Returns all segments in the segmentDict in gfa format.
+
+	get_pathDict()
+
+Returns the pathDict.
+
+	get_path(pathName)
+
+Returns the pathObject assigned to pathName in the pathDict.
+
+	get_paths()
+
+Returns all pathNames.
+
+	change_pathList(pathName, pathList)
+
+Replaces the node order list of the pathObject with the id _pathName_ with _pathList_.
+
+	get_pathList()
+
+Returns all path in standard gfa format.
+
+	get_linkList()
+
+Returns a list of all linkObjects.
+
+#### Class: Segment
+
+* id: _str_
+* sequence: _str_
+* pathDict: _{pathName: [pathPosition,...],...}_
+* incomingLinks: _linkObject_
+* outgoingLinks: _linkObject_
+* leftAnchor: _bubbleObject_
+* rightAnchor: _bubbleObject_
+
+Segment objects are stored in a dictionary and can be accessed using their segment id. The same ID used in the gfa file
+
+	gfaFile.get_segmentDict()
+
+Returns the complete segment dictionary. {segmentID: segmentObject, ...}
+
+	gfaFile.get_segments()
 
 Returns a list of segment ids
 
