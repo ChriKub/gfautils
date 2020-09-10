@@ -32,6 +32,8 @@ Loading a gfa:
 * bubbleDict: _{coreNumber: [bubbleObject,...]}_
 * bubbleList: _[bubbleObject,...]_
 
+Creating the a _gfaObject_.
+
 	GFA(GFAfile: _str_)
 
 ##### Methods:
@@ -108,14 +110,15 @@ Returns a gfa file based on the data given in the path. Only nodes that are in t
 
 #### Class: Segment
 
-	* id: _str_
-	* sequence: _str_
-	* pathDict: _{pathID: [pathPosition,...],...}_
-	* incomingLinks: _linkObject_
-	* outgoingLinks: _linkObject_
-	* leftAnchor: _bubbleObject_
-	* rightAnchor: _bubbleObject_
+* id: _str_
+* sequence: _str_
+* pathDict: _{pathID: [pathPosition,...],...}_
+* incomingLinks: _linkObject_
+* outgoingLinks: _linkObject_
+* leftAnchor: _bubbleObject_
+* rightAnchor: _bubbleObject_
 
+Creating the a _segmentObject_.
 
 	Segment(SegmentLine: _str_)
 
@@ -221,13 +224,14 @@ Adds a new bubbleObject for which this segment is a right anchor.
 
 #### Class: Link
 
-	* leftSegment: _segmentObject_
-	* leftSegmentOrientation: _str_ (+/-)
-	* rightSegment: _segmentObject_
-	* rightSegmentOrientation: _str_ (+/-)
-	* CIGAR: _str_
-	* pathList: _list_
+* leftSegment: _segmentObject_
+* leftSegmentOrientation: _str_ (+/-)
+* rightSegment: _segmentObject_
+* rightSegmentOrientation: _str_ (+/-)
+* CIGAR: _str_
+* pathList: _list_
 
+Creating the a _linkObject_.
 
 	Link(leftSegment: _segmentObject_, leftOrientation: _str_, rightSegment: _segmentObject_, rightOrientation: _str_, CIGAR: _str_)
 
@@ -236,10 +240,11 @@ Adds a new bubbleObject for which this segment is a right anchor.
 
 #### Class: Path
 
-	* pathID: _str_
-	* pathList: _list_
-	* cigarList: _list_
+* pathID: _str_
+* pathList: _list_
+* cigarList: _list_
 
+Creating the a _pathObject_.
 
 	Path(pathID: _str_, pathList: _str_, cigarList: _str_)
 
@@ -248,14 +253,15 @@ Adds a new bubbleObject for which this segment is a right anchor.
 
 #### Class: Bubble
 
-	* bubbleID: _str_
-	* leftAnchor: _segmentObject_
-	* rightAnchor: _segmentObject_
-	* segmentSet: _{segmentIDs}_
-	* coreNumber: _int_ (first core size for which the bubble has been detected)
-	* parent: _bubbleObject_ (None if top bubble)
-	* subBubbles: _[bubbleObjects]_
+* bubbleID: _str_
+* leftAnchor: _segmentObject_
+* rightAnchor: _segmentObject_
+* segmentSet: _{segmentIDs}_
+* coreNumber: _int_ (first core size for which the bubble has been detected)
+* parent: _bubbleObject_ (None if top bubble)
+* subBubbles: _[bubbleObjects]_
 
+Creating the a _bubbleObject_.
 
 	Bubble(bubbleID: _str_, leftAnchor: _segmentObject/None_, rightAnchor: _segmentObject/None_, segmentList: _list_, coreNumber: _str_, parent: _bubbleObject_)
 
@@ -309,9 +315,10 @@ Adds the _bubbleObject_ as sub bubble.
 
 #### Class: Traversal
 
-	* pathList: _list_
-	* segmentList: _list_
+* pathList: _list_
+* segmentList: _list_
 
+Creating the a traversalObject_.
 
 	Traversal(pathName: _str_, segmentList: _list_)
 
