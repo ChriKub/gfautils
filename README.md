@@ -117,6 +117,7 @@ Returns a gfa file based on the data given in the path. Only nodes that are in t
 * outgoingLinks: _linkObject_
 * leftAnchor: _bubbleObject_
 * rightAnchor: _bubbleObject_
+* bubbleList: '_[bubbleObject]_'
 
 Creating the a _segmentObject_.
 
@@ -220,6 +221,14 @@ Returns a _list_ of all bubbleObjects for which this segment is a right anchor.
 	add_rightAnchor(anchor: _bubbleObject_)
 
 Adds a new bubbleObject for which this segment is a right anchor.
+
+	add_bubble(bubble: _bubbleObject_)
+
+Adds a new bubbleObject that this segment is part of to the bubbleList.
+
+	get_bubbleList()
+
+Returns _list_ of all bubbleObjects that this segment is part of
 
 
 #### Class: Link
