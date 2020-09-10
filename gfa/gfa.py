@@ -9,18 +9,18 @@ from .mapping import vectorize
 
 class gfaHandler():
 
-	def __init__(self, revealFile):
+	def __init__(self, gfaFile):
 		self.segmentDict={}
 		self.pathDict={}
 		self.linkList=[]
 		self.bubbleDict={}
 		self.bubbleList=[]
-		self.process_Reveal(revealFile)
+		self.process_GFA(gfaFile)
 
 
-	def process_Reveal(self, revealFile):
+	def process_GFA(self, gfaFile):
 		linkList=[]
-		for line in revealFile.split('\n'):
+		for line in gfaFile.split('\n'):
 			if line:
 				if line[0]=='S':
 					self.segmentDict[line.split('\t')[1]]=Segment(line)
@@ -150,22 +150,7 @@ class gfaHandler():
 		return hasBubble
 
 
-	def add_pack(self, pack):
-		packDict=pack.get_nodeDict()
-		for segment in packDict.keys():
-			self.segmentDict[segment].add_pack(packDict[segment])
-		return None
-
-
-	def add_vectorize(self, vectorize):
-		readDict=vectorize.get_readDict()
-		for read in readDict.keys():
-			for segment in readDict[read]:
-				self.segmentDict[segment].add_read(read)
-		return None
-
-
-	def build_gfa(self, header=False):
+	def build_gfa(self, header=None):
 		gfa=[]
 		if header:
 			gfa=['H\tVN:Z:1.0'+header]
@@ -178,7 +163,7 @@ class gfaHandler():
 		return gfa
 
 
-	def rebuild_gfa(self, header=False):
+	def rebuild_gfa(self, header=None):
 		gfa=[]
 		segmentSet=set([])
 		linkSet=set([])
@@ -199,90 +184,3 @@ class gfaHandler():
 		gfa.extend(list(linkSet))
 		gfa.extend(self.get_pathList())
 		return gfa
-
-
-	def unchop(self):
-		unchopList=[[]]
-		for path in self.get_pathList():
-			pathID=path.split('\t')[1]
-			segmentList=path.split('\t')[2].split(',')
-			unchop=True
-			for i in range(len(segmentList)):
-				segmentID=segmentList[i][:-1]
-				if i==len(segmentList)-1:
-					try:
-						if segmentList[-2][:-1]==unchopList[-1][-1]:
-							unchopList[-1].append(segmentID)
-							unchopList.append([])
-					except:
-						pass
-				elif len(self.segmentDict[segmentID].get_successors())==1 and segmentID!=self.segmentDict[segmentID].get_successors().keys()[0]:
-					if len(self.segmentDict[segmentID].get_successors()[self.segmentDict[segmentID].get_successors().keys()[0]])==1:
-						if self.segmentDict[segmentID].get_pathDict().keys()==self.segmentDict[self.segmentDict[segmentID].get_successors().keys()[0]].get_pathDict().keys():
-							unchopList[-1].append(segmentID)
-						else:
-							try:
-								if segmentList[i-1][:-1]==unchopList[-1][-1]:
-									unchopList[-1].append(segmentID)
-							except:
-								pass 
-							unchopList.append([])
-					else:
-						try:
-							if segmentList[i-1][:-1]==unchopList[-1][-1]:
-								unchopList[-1].append(segmentID)
-						except:
-							pass
-						unchopList.append([])
-				else:
-					try:
-						if segmentList[i-1][:-1]==unchopList[-1][-1]:
-							unchopList[-1].append(segmentID)
-					except:
-						pass
-					unchopList.append([])
-		cleanList=[]
-		for newNode in unchopList:
-			if newNode:
-				cleanList.append(','.join(newNode))
-		unchopList=list(set(cleanList))
-		if unchopList:
-			self.rebuild_segmentDict(unchopList)
-		return None
-
-
-	def rebuild_segmentDict(self, unchopList):
-		for newNode in unchopList:
-			splitNodes=newNode.split(',')
-			successorDict={}
-			sequence=self.segmentDict[splitNodes[0]].get_sequence()
-			for segment in splitNodes[1:]:
-				sequence+=self.segmentDict[segment].get_sequence()
-				successorDict=self.segmentDict[segment].get_successors()
-#				del self.segmentDict[segment]
-			self.segmentDict[splitNodes[0]].set_sequence(sequence)
-			self.segmentDict[splitNodes[0]].set_successors(successorDict)
-		self.clean_segmentDict(unchopList)
-		self.rebuild_pathDict()
-		return None
-
-
-	def clean_segmentDict(self, unchopList):
-		for newNode in unchopList:
-			splitNodes=newNode.split(',')
-			for segment in splitNodes[1:]:
-				try:
-					del self.segmentDict[segment]
-				except:
-					pass
-		return None
-
-
-	def rebuild_pathDict(self):
-		for path in self.pathDict:
-			for place in sorted(self.pathDict[path].get_pathDict().keys()):
-				try:
-					self.segmentDict[self.pathDict[path].get_pathDict()[place][0].get_id()]
-				except:
-					del self.pathDict[path].get_pathDict()[place]
-		return None
