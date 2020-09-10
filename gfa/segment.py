@@ -10,6 +10,7 @@ class Segment():
 		self.outgoingLinks=[]
 		self.leftAnchor=[]
 		self.rightAnchor=[]
+		self.bubbleList=[]
 		return None
 
 
@@ -168,4 +169,11 @@ class Segment():
 
 	def add_rightAnchor(self, anchor):
 		self.rightAnchor.append(anchor)
-	
+
+
+	def add_bubble(self, bubble):
+		self.bubbleList.append(bubble)
+
+
+	def get_bubbleList(self):
+		return self.bubbleList
