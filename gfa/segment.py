@@ -10,7 +10,6 @@ class Segment():
 		self.outgoingLinks=[]
 		self.leftAnchor=[]
 		self.rightAnchor=[]
-		
 		return None
 
 

@@ -18,7 +18,7 @@ Loading a gfa:
 	input=file.read()
 	file.close()
 	
-	gfaFile = gfaHandler(input)
+	gfaFile = gfaHandler(input: _str_)
 
 	gfaFile.build_gfa()
 
@@ -27,16 +27,20 @@ Loading a gfa:
 #### Class: GFA
 
 * segmentDict: _{segmentID: segmentObject,...}_
-* pathDict: _{pathName: pathObject,...}_
+* pathDict: _{pathID: pathObject,...}_
 * linkList: _[linkObject,...]_
 * bubbleDict: _{coreNumber: [bubbleObject,...]}_
 * bubbleList: _[bubbleObject,...]_
+
+	GFA(GFAfile: _str_)
+
+##### Methods:
 
 	get_segmentDict()
 
 Returns the full segmentDict.
 
-	get_segment(segmentID)
+	get_segment(segmentID: _str_)
 
 Returns the segmentObject assigned to _segmentID_ in the Dict..
 
@@ -44,10 +48,9 @@ Returns the segmentObject assigned to _segmentID_ in the Dict..
 
 Returns all segmentIDs
 
-	add_segment(segmentLine)
+	add_segment(segmentLine: _str_)
 
 Adds a new segment to the segmentDict. _segmentLine_ has the format of a gfa segment line.
-
 
 	get_segmentList()
 
@@ -57,17 +60,17 @@ Returns all segments in the segmentDict in gfa format.
 
 Returns the pathDict.
 
-	get_path(pathName)
+	get_path(pathID: _str_)
 
-Returns the pathObject assigned to pathName in the pathDict.
+Returns the pathObject assigned to pathID in the pathDict.
 
 	get_paths()
 
-Returns all pathNames.
+Returns all pathIDs.
 
-	change_pathList(pathName, pathList)
+	change_pathList(pathID: _str_, pathList: _list_)
 
-Replaces the node order list of the pathObject with the id _pathName_ with _pathList_.
+Replaces the node order list of the pathObject with the id _pathID_ with _pathList_.
 
 	get_pathList()
 
@@ -77,29 +80,270 @@ Returns all path in standard gfa format.
 
 Returns a list of all linkObjects.
 
+	get_bubbleDict()
+
+Returns a dictionary with all bubbles. Keys in the dictionary are the number of ecotypes traversing the anchor bubble. 
+
+	get_bubbleList()
+
+Returns a list of all bubbleObjects.
+
+	add_bubble(leftAnchor: _segmentObject_, rightAnchor: _segmentObject_, segmentList: _list_, coreNumber: _int_, parent: _bubbleObject/None_)
+
+Creates a new bubble object and adds it to the bubbleList and to the bubbleDict.
+
+	has_bubble(segmentList: _list_, leftAnchorNode: _segmentObject_, rightAnchorNode: _segmentObject_)
+
+Tries to find a existing bubble that is either the correct bubble, or the closest existing parentbubble.
+
+	build_gfa(header: _str/None_)
+
+Returns all data stored in this class as a full gfa file. If a header is given it is appended to the standard gfa header line.
+
+	rebuild_gfa(header: _str/None_)
+
+Returns a gfa file based on the data given in the path. Only nodes that are in the existig paths and links that are described there are written into the file, or created for this purpose. If a header is given it is appended to the standard gfa hearder line.
+
+
+
 #### Class: Segment
 
-* id: _str_
-* sequence: _str_
-* pathDict: _{pathName: [pathPosition,...],...}_
-* incomingLinks: _linkObject_
-* outgoingLinks: _linkObject_
-* leftAnchor: _bubbleObject_
-* rightAnchor: _bubbleObject_
+	* id: _str_
+	* sequence: _str_
+	* pathDict: _{pathID: [pathPosition,...],...}_
+	* incomingLinks: _linkObject_
+	* outgoingLinks: _linkObject_
+	* leftAnchor: _bubbleObject_
+	* rightAnchor: _bubbleObject_
 
-Segment objects are stored in a dictionary and can be accessed using their segment id. The same ID used in the gfa file
 
-	gfaFile.get_segmentDict()
+	Segment(SegmentLine: _str_)
 
-Returns the complete segment dictionary. {segmentID: segmentObject, ...}
 
-	gfaFile.get_segments()
+##### Methods:
 
-Returns a list of segment ids
+	get_id()
 
-	self.get_segment(str(segmentId))
+Returns the segmentID.
 
-Returns the segment object with the given segment id.
+	get_sequence()
+
+Returns the segments Sequence.
+
+	get_sequence_length()
+
+Returns the the length of the sequence assigned to the segment object.
+
+	fill_pathDict(pathID: _str_, position: _int_)
+
+Adds the position this segment has in the path to the pathDict.
+
+	get_pathDict()
+
+Returns the pathDict with all pathPositions of this segment.
+
+	get_path_positions(pathID: _str_)
+
+Returns all positions this segment has in the path.
+
+	remove_from_pathDict(pathID: _str_, pathPosition: _int_)
+
+Removes the entry of pathPosition from the pathDict.
+
+	get_predecessors()
+
+Returns a list of all incoming linkObjects.
+
+	get_predecessorNode(pathID: _str_, pathPosition: _int_)
+
+Returns the predecessor segmentObject and start position of this segment based on the path and position given to the function.
+
+	get_successors()
+
+Returns a list of all outgoing linkObjects.
+
+	get_successorNode(pathID: _str_, pathPosition: _int_, reverse: _bool/False_)
+
+Returns the successor segmentObject and start position of this segment based on the path and position given to this function.
+
+	add_incomingLink(linkObject: _linkobject_)
+
+Adds a new linkObject to the predecessors.
+
+	add_outgoingLink(linkObject: _linkObject_)
+
+Adds a new linkObject to the successors.
+
+	build_links()
+
+Returns the links for this segment in gfa format.
+
+	is_repeat()
+
+Returns _True_ if at least on path traverses this segment twice.
+
+	has_cycle(pathID: _str_)
+
+Returns _True_ if the specified path traverses the segment at least twice.
+
+	has_path(pathID: _str_)
+
+Returns _True_ if the specified path traverses this segment at least once.
+
+	has_ecotype(ecotypeBase: _str_)
+
+Returns _True_ if the segment is traversed by any path that has this ecotypeBase. (PathID=EcotypeBase_contigID e.g. TAIR10_Chr1)
+
+	get_pathNumber()
+
+Returns the total number of traversals through this segment.
+
+	get_ecotypeNumber()
+
+Returns the number of different ecotypes that traverse through this segment.
+
+	get_leftAnchor()
+
+Returns a _list_ of all bubbleObjects for which this segment is a left anchor.
+
+	add_leftAnchor(anchor: _bubbleObject_)
+
+Adds a new bubbleObject for which this segment is a left anchor.
+
+	get_rightAnchor()
+
+Returns a _list_ of all bubbleObjects for which this segment is a right anchor.
+
+	add_rightAnchor(anchor: _bubbleObject_)
+
+Adds a new bubbleObject for which this segment is a right anchor.
+
+
+#### Class: Link
+
+	* leftSegment: _segmentObject_
+	* leftSegmentOrientation: _str_ (+/-)
+	* rightSegment: _segmentObject_
+	* rightSegmentOrientation: _str_ (+/-)
+	* CIGAR: _str_
+	* pathList: _list_
+
+
+	Link(leftSegment: _segmentObject_, leftOrientation: _str_, rightSegment: _segmentObject_, rightOrientation: _str_, CIGAR: _str_)
+
+##### Methods:
+
+
+#### Class: Path
+
+	* pathID: _str_
+	* pathList: _list_
+	* cigarList: _list_
+
+
+	Path(pathID: _str_, pathList: _str_, cigarList: _str_)
+
+##### Methods:
+
+
+#### Class: Bubble
+
+	* bubbleID: _str_
+	* leftAnchor: _segmentObject_
+	* rightAnchor: _segmentObject_
+	* segmentSet: _{segmentIDs}_
+	* coreNumber: _int_ (first core size for which the bubble has been detected)
+	* parent: _bubbleObject_ (None if top bubble)
+	* subBubbles: _[bubbleObjects]_
+
+
+	Bubble(bubbleID: _str_, leftAnchor: _segmentObject/None_, rightAnchor: _segmentObject/None_, segmentList: _list_, coreNumber: _str_, parent: _bubbleObject_)
+
+
+##### Methods:
+
+	get_bubbleID()
+
+Returns the ID string of the bubble.
+
+	get_Anchors()
+
+Returns both anchors as _segmentObjects_: leftAnchor, rightAnchor.
+
+	get_leftAnchor()
+
+Returns the leftAnchor as _segmentObject_.
+
+	get_rightAnchor()
+
+Returns the rightAnchor as_ segmentObject_.
+
+	get_segmentSet()
+
+Returns a set of all segmentIDs that are part of this bubble
+
+	find_subBubble(bubbleID: _str_, leftAnchor: _segmentObject_, rightAnchor: _segmentObject_, traversalSet: _set_, coreNumber: _int_)
+
+Returns a existing sub bubble that fits the current traversal, if non can be found _None_.
+
+	get_subBubbles()
+
+Returns a list of all _bubbleObjects_ that are assigned as sub bubbles.
+
+	add_segments(newSegments: _list_)
+
+Adds all segmentIDs in the _segmentList_ to the bubbles segmentSet.
+
+	add_traversal(pathName: _string_, segmentList: _list_)
+
+Adds a new _traversalObject_ to this bubble, or if this traversal already existsadds the path to the existing traversal.
+
+	get_traversalList()
+
+Returns a list of all _traversalObjects_ attached to the_ bubbleObject_.
+
+	add_subBubble(subBubble: _bubbleObject_)
+
+Adds the _bubbleObject_ as sub bubble.
+
+
+#### Class: Traversal
+
+	* pathList: _list_
+	* segmentList: _list_
+
+
+	Traversal(pathName: _str_, segmentList: _list_)
+
+##### Methods:
+
+	add_path(pathID)
+
+Adds the pathID to the objects pathList.
+
+	get_pathList()
+
+Returns the pathList of all paths going through this traversal.
+
+	get_segmentList()
+
+Returns the segmentList that contains all the segmentIDs and their orientation on the correct order that make up this traversal.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #### Accessing Segment Data
 
@@ -160,55 +404,3 @@ Returns a list of nodes and strands [1+,2-,3+,...] ordered by their occurence in
 	path.get_position()
 
 Returns the segmentID, strand and CIGAR for this position in the path.
-
-# **Class: Bubble**
-
-* bubbleID: <str>
-* leftAnchor: <segmentObject>
-* rightAnchor: <segmentObject>
-* segmentSet: {segmentIDs}
-* coreNumber: <int> (first core size for which the bubble has been detected)
-* parent: <bubbleObject> (None if top bubble)
-* subBubbles: [bubbleObjects]
-
-## Methods:
-> *get_bubbleID()*
-> returns the ID string of the bubble
-
-> *get_Anchors()*
-> returns both anchors as segmentObjects: leftAnchor, rightAnchor
-
-> *get_leftAnchor()*
-> returns the leftAnchor as segmentObject
-
-> *get_rightAnchor()*
-> returns the rightAnchor as segmentObject
-
-> *get_segmentSet()*
-> returns a set of all segmentIDs that are part of this bubble
-
-> *find_subBubble(bubbleID: <str>, leftAnchor: <segmentObject>, rightAnchor: 
-<segmentObject>, traversalSet: <set>, coreNumber: <int>)
-> Returns a existing sub bubble that fits the current traversal, if non can be 
-found **None**
-
-> *get_subBubbles()*
-> Returns a list of all bubbleObjects that are assigned as sub bubbles.
-
-> *add_segments(segmentList: <list>)*
-> Adds all segmentIDs in the segmentList to the bubbles segmentSet
-
-> *add_traversal(pathName: <string>, segmentList: <list>)*
-> Adds a new traversalObject to this bubble, or if this traversal already exists 
-adds the path to the existing traversal
-
-> *get_traversalList()*
-> Returns a list of all traversalObjects attached to the bubbleObject
-
-> *add_subBubble(subBubble: <bubbleObject>)*
-> Adds the new subBubble to the bubbles subBubbleList.
-
-# Contact
-
-<christian.kubica@tuebingen.mpg.de>
-
