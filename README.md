@@ -206,6 +206,10 @@ Returns the total number of traversals through this segment.
 
 Returns the number of different ecotypes that traverse through this segment.
 
+	get_traversalNumber()
+
+Returns the number of times the segment is being traversed.
+
 	get_leftAnchor()
 
 Returns a _list_ of all bubbleObjects for which this segment is a left anchor.
