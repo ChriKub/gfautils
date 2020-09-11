@@ -155,6 +155,13 @@ class Segment():
 		return len(list(ecotypes))
 
 
+	def get_traversalNumber(self):
+		traversalNumber=0
+		for path in self.pathDict:
+			traversalNumber+=len(self.pathDict[path])
+		return traversalNumber
+
+
 	def get_leftAnchor(self):
 		return self.leftAnchor
 
