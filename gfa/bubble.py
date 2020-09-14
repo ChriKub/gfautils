@@ -83,7 +83,7 @@ class Bubble():
 
 class Traversal():
 
-	def __init__(self, segmentList path):
+	def __init__(self, segmentList, path):
 		self.pathList=[]
 		self.add_path(path)
 		self.segmentList=segmentList
