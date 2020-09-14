@@ -23,6 +23,10 @@ class Bubble():
 		return self.bubbleID
 
 
+	def get_coreNumber(self):
+		return self.coreNumber
+
+
 	def get_Anchors(self):
 		return self.leftAnchor, self.rightAnchor
 
@@ -57,14 +61,14 @@ class Bubble():
 		self.segmentSet.update(set(newSegments))
 
 
-	def add_traversal(self, pathName, segmentList):
+	def add_traversal(self, pathName, segmentList, leftPosition, rightPosition):
 		oldTraversal=None
 		for traversal in self.traversalList:
 			if segmentList==traversal.get_segmentList():
-				traversal.add_path(pathName)
+				traversal.add_path([pathName, leftPosition, rightPosition])
 				oldTraversal=traversal
 		if not oldTraversal:
-			self.traversalList.append(Traversal(pathName, segmentList))
+			self.traversalList.append(Traversal(segmentList, [pathName, leftPosition, rightPosition]))
 		self.segmentSet.update(set(segmentList))
 		return None
 
@@ -79,14 +83,14 @@ class Bubble():
 
 class Traversal():
 
-	def __init__(self, pathName, segmentList):
+	def __init__(self, segmentList path):
 		self.pathList=[]
-		self.add_path(pathName)
+		self.add_path(path)
 		self.segmentList=segmentList
 
 
-	def add_path(self, pathName):
-		self.pathList.append(pathName)
+	def add_path(self, path):
+		self.pathList.append(path)
 
 
 	def get_pathList(self):

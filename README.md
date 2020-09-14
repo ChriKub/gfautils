@@ -333,13 +333,13 @@ Adds the _bubbleObject_ as sub bubble.
 
 Creating the a traversalObject_.
 
-	Traversal(pathName: _str_, segmentList: _list_)
+	Traversal(segmentList: _list_, path: _list_)
 
 ##### Methods:
 
-	add_path(pathID)
+	add_path(path: _list_)
 
-Adds the pathID to the objects pathList.
+Adds the path [pathID, startposition, stopPosition] to the objects pathList.
 
 	get_pathList()
 
