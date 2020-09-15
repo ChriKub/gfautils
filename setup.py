@@ -5,6 +5,5 @@ setup(
     name="gfautils",
     version=gfa.__version__,
     packages=find_packages()
-
 )
 
