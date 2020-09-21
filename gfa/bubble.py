@@ -69,7 +69,8 @@ class Bubble():
 				oldTraversal=traversal
 		if not oldTraversal:
 			self.traversalList.append(Traversal(segmentList, [pathName, leftPosition, rightPosition]))
-		self.segmentSet.update(set(segmentList))
+		if isinstance(segmentList, list) or isinstance(segmentList, set):
+			self.segmentSet.update(set(segmentList))
 		return None
 
 
