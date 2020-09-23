@@ -38,6 +38,13 @@ class Segment():
 		return self.pathDict
 
 
+	def get_ecotypeList(self):
+		ecotypeList=set([])
+		for path in self.pathList:
+			ecotypeList.add(path.split('_')[0])
+		return list(ecotypeList)
+
+
 	def get_path_positions(self, pathID):
 		return self.pathDict[pathID]
 

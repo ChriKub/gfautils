@@ -146,6 +146,10 @@ Adds the position this segment has in the path to the pathDict.
 
 Returns the pathDict with all pathPositions of this segment.
 
+	get_ecotypeList()
+
+Returns a list of all traversed ecotypes.
+
 	get_path_positions(pathID: _str_)
 
 Returns all positions this segment has in the path.
