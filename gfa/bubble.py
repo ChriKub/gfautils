@@ -17,6 +17,7 @@ class Bubble():
 		self.parent=parent
 		self.subBubbleList=[]
 		self.traversalList=[]
+		self.siblingList=[]
 
 
 	def get_bubbleID(self):
@@ -80,6 +81,19 @@ class Bubble():
 
 	def add_subBubble(self, subBubble):
 		self.subBubbleList.append(subBubble)
+
+
+	def get_siblingList(self):
+		return self.siblingList
+
+
+	def add_sibling(self, sibling)
+		if len(self.segmentSet, sibling.get_segmentSet())>0:
+			self.siblingList.append(sibling)
+			for subBubble in self.subBubbleList
+				subBubble.add_sibling(sibling)
+		return None
+
 
 
 class Traversal():
