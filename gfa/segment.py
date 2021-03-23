@@ -40,7 +40,7 @@ class Segment():
 
 	def get_ecotypeList(self):
 		ecotypeList=set([])
-		for path in self.pathList:
+		for path in self.pathDict:
 			ecotypeList.add(path.split('_')[0])
 		return list(ecotypeList)
 
