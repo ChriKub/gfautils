@@ -87,12 +87,25 @@ class Bubble():
 		return self.siblingList
 
 
-	def add_sibling(self, sibling)
-		if len(self.segmentSet, sibling.get_segmentSet())>0:
+	def add_sibling(self, sibling):
+		if len(set.intersection(self.segmentSet, sibling.get_segmentSet()))>0:
 			self.siblingList.append(sibling)
-			for subBubble in self.subBubbleList
+			for subBubble in self.subBubbleList:
 				subBubble.add_sibling(sibling)
 		return None
+
+
+	def is_related_bubble(self, bubbleObject):
+		related=False
+		bubbleIDList=bubbleObject.get_bubbleID().split('.')
+		ownBubbleIDList=self.bubbleID.split('.')
+		for i in range(len(bubbleIDList)):
+			if bubbleIDList[i]!="0" or ownBubbleIDList[i]!="0":
+				if bubbleIDList[i]==ownBubbleIDList[i]:
+					related=True
+			break
+		return related
+
 
 
 
