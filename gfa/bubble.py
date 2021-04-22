@@ -90,8 +90,8 @@ class Bubble():
 	def add_sibling(self, sibling):
 		if len(set.intersection(self.segmentSet, sibling.get_segmentSet()))>0:
 			self.siblingList.append(sibling)
-			for subBubble in self.subBubbleList:
-				subBubble.add_sibling(sibling)
+#			for subBubble in self.subBubbleList:
+#				subBubble.add_sibling(sibling)
 		return None
 
 
