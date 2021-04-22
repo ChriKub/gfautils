@@ -3,14 +3,14 @@
 
 class Bubble():
 
-	def __init__(self, bubbleID, leftAnchor, rightAnchor, segmentList, coreNumber, parent=None):
-		self.bubbleID=bubbleID
+	def __init__(self, leftAnchor, leftPosition, coreNumber, parent=None):
+		self.bubbleID=None
 		self.leftAnchor=leftAnchor
 		if leftAnchor:
 			leftAnchor.add_leftAnchor(self)
+		leftPosition=leftPosition
 		self.rightAnchor=rightAnchor
-		if rightAnchor:
-			rightAnchor.add_rightAnchor(self)
+		self.rightPosition=None
 		self.segmentSet=set(segmentList)
 		self.pathDict={}
 		self.coreNumber=coreNumber
@@ -18,6 +18,14 @@ class Bubble():
 		self.subBubbleList=[]
 		self.traversalList=[]
 		self.siblingList=[]
+		return None
+
+
+	def set_rightAnchor(self, rightAnchor, rightPosition):
+		self.rightAnchor=rightAnchor
+		if rightAnchor:
+			rightAnchor.add_rightAnchor(self)
+		return None
 
 
 	def get_bubbleID(self):
