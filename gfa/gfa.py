@@ -125,8 +125,8 @@ class gfaHandler():
 		return self.bubbleList
 
 
-	def add_bubble(self, bubbleID, leftAnchor, rightAnchor, segmentList, coreNumber, parent=None):
-		bubble=Bubble(bubbleID, leftAnchor, rightAnchor, segmentList, str(coreNumber), parent)
+	def add_bubble(self, leftAnchor, coreNumber, parent=None):
+		bubble=Bubble(leftAnchor, str(coreNumber), parent)
 		self.bubbleList.append(bubble)
 		if str(coreNumber) in self.bubbleDict:
 			self.bubbleDict[str(coreNumber)].append(bubble)
