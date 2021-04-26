@@ -15,9 +15,21 @@ class Bubble():
 		self.pathDict={}
 		self.coreNumber=coreNumber
 		self.parent=parent
+		if parent:
+			parent.add_subBubble(self)
 		self.subBubbleList=[]
 		self.traversalList=[]
 		self.siblingList=[]
+
+
+	def set_bubbleID(self, nameList):
+		nameList[len(nameList)-(int(self.coreNumber)-1)]+=1
+		self.bubbleID='.'.join(map(str, nameList))
+		if self.subBubbleList:
+			for subBubble in self.subBubbleList:
+				nameList=subBubble.set_bubbleID(nameList)
+			nameList[len(nameList)-int(self.coreNumber)+1]=0
+		return nameList
 
 
 	def get_bubbleID(self):
@@ -26,6 +38,10 @@ class Bubble():
 
 	def get_coreNumber(self):
 		return self.coreNumber
+
+
+	def get_parent(self):
+		return self.parent
 
 
 	def get_Anchors(self):
