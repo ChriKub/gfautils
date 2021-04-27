@@ -20,16 +20,23 @@ class Bubble():
 		self.subBubbleList=[]
 		self.traversalList=[]
 		self.siblingList=[]
+		self.subBubbleLevels={}
 
 
-	def set_bubbleID(self, nameList):
-		nameList[len(nameList)-(int(self.coreNumber)-1)]+=1
+	def set_bubbleID(self, nameList=None):
+		if self.parent:
+			nameList=self.parent.get_bubbleID().split('.')
+			subBubbleLevels=self.parent.get_subBubbleLevels()
+			if self.coreNumber in subBubbleLevels:
+				levelCount=self.parent.get_subBubbleLevels()[self.coreNumber]
+			else:
+				levelCount=0
+			nameList[len(nameList)-(int(self.coreNumber)-1)]=str(levelCount+1)
+			self.parent.add_subBubbleLevel(self.coreNumber)
 		self.bubbleID='.'.join(map(str, nameList))
-		if self.subBubbleList:
-			for subBubble in self.subBubbleList:
-				nameList=subBubble.set_bubbleID(nameList)
-			nameList[len(nameList)-int(self.coreNumber)+1]=0
-		return nameList
+		for subBubble in self.subBubbleList:
+			subBubble.set_bubbleID()
+		return None
 
 
 	def get_bubbleID(self):
@@ -121,6 +128,18 @@ class Bubble():
 					related=True
 			break
 		return related
+
+
+	def get_subBubbleLevels(self):
+		return self.subBubbleLevels
+
+
+	def add_subBubbleLevel(self, bubbleLevel):
+		if bubbleLevel in self.subBubbleLevels:
+			self.subBubbleLevels[bubbleLevel]+=1
+		else:
+			self.subBubbleLevels[bubbleLevel]=1
+		return None
 
 
 
